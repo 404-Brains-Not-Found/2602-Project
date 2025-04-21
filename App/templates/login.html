@@ -1,0 +1,64 @@
+{% extends "new_layout.html" %}
+{% block title %}Login{% endblock %}
+{% block page %}Login{% endblock %}
+
+{{ super() }}
+
+{% block content %}
+<div class="row">
+  <div class="col s12 m6 offset-m3">
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title">Select Role to Login</span>
+
+        <div class="center-align">
+          <button class="btn role-btn" data-role="student">Student</button>
+          <button class="btn role-btn blue" data-role="staff">Staff</button>
+          <button class="btn role-btn green" data-role="company">Company</button>
+        </div>
+
+        <form method="POST" action="{{ url_for('auth_views.login_action') }}" style="margin-top: 20px;">
+          <input type="hidden" id="role" name="role" required>
+
+          <div class="input-field">
+            <input id="username" name="username" type="text" required>
+            <label for="username">Username</label>
+          </div>
+
+          <div class="input-field">
+            <input id="password" name="password" type="password" required>
+            <label for="password">Password</label>
+          </div>
+
+          <button class="btn waves-effect waves-light" type="submit">Login</button>
+        </form>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="collection red-text">
+              {% for message in messages %}
+                <li class="collection-item">{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('.role-btn');
+  const roleInput = document.getElementById('role');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      const selectedRole = btn.getAttribute('data-role');
+      roleInput.value = selectedRole;
+      M.toast({html: `Role selected: ${selectedRole}`});
+    });
+  });
+</script>
+{% endblock %}

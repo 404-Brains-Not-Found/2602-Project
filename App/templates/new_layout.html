@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{% block title %}Internship Platform{% endblock %}</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+
+    <style>
+      .navbar-form label {
+        color: white !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <nav class="purple">
+      <div class="nav-wrapper container">
+        <a href="/" class="brand-logo center">{% block page %}Dashboard{% endblock %}</a>
+
+        <ul id="nav-mobile" class="left">
+            {% if is_authenticated %}
+                {% if current_user.role == 'staff' %}
+                    <li><a href="/staff_dash">Home</a></li>
+                {% elif current_user.role == 'company' %}
+                    <li><a href="/company_dash">Home</a></li>
+                {% elif current_user.role == 'student' %}
+                    <li><a href="/student_dash">Home</a></li>
+                {% endif %}
+            
+            {% else %}
+              <li><a href="/">Home</a></li>
+            {% endif %}
+        </ul>
+
+        {% if is_authenticated %}
+        <ul id="nav-mobile" class="right">
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+        {% else %}
+       
+        {% endif %}
+      </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="container" id="flash-messages">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class="collection red-text">
+            {% for message in messages %}
+              <li class="collection-item">{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <div class="container" id="content">
+      {% block content %}{% endblock %}
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+      M.AutoInit();
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            M.toast({ html: "{{ message }}" });
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </script>
+  </body>
+</html>
