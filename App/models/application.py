@@ -8,6 +8,8 @@ class Application(db.Model):
     internship_id = db.Column(db.Integer, db.ForeignKey('internship.id'), nullable=False)
     resume = db.Column(db.String(255))  # path to uploaded file
     status = db.Column(db.String(20), default='pending')
+    shortlist_id = db.Column(db.Integer, db.ForeignKey('shortlist.id'), nullable=True)
+
 
     # Inherited subclass relationship
     student = db.relationship('Student', foreign_keys=[student_id])
