@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Dashboard{% endblock %}</title>
+
+    <!-- Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+      body {
+        background-color: #f9f9f9;
+      }
+      
+      .scrollable-section {
+        max-height: 400px; /* or whatever height you want */
+        overflow-y: auto;
+        padding-right: 10px; /* for scrollbar spacing */
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #fff;
+      }
+      .tab-border {
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+        background-color: #fff;
+        margin-bottom: 1rem;
+    }
+
+      .tabs .tab a {
+        color: #1976d2;
+      }
+      .tabs .tab a.active {
+        font-weight: bold;
+      }
+      .card .card-content img {
+        width: 60px;
+      }
+      .search-container {
+        display: flex;
+        justify-content: center;
+        padding: 1rem;
+      }
+      .card-action .btn-flat {
+        margin-right: 1rem;
+      }
+
+      .content-border {
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        background-color: #fff;
+      }     
+    </style>
+  </head>
+
+  <body>
+    <nav class="white z-depth-0">
+      <div class="nav-wrapper container">
+        <span class="black-text" style="font-size: 1.5rem; font-weight: bold;">ResuMeup</span>
+        <ul class="right">
+          <li><span class="black-text">{{ current_user.username }}</span></li>
+          <li><i class="material-icons black-text">account_circle</i></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Tab Navigation -->
+    <div class="container tab-border">
+      <div class="row">
+        <div class="col s12">
+          <ul class="tabs">
+            <li class="tab col s6"><a class="active" href="#internships">Internships</a></li>
+            <li class="tab col s6"><a href="#applications">Applications</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Search Box -->
+      <div class="search-container">
+        <div class="input-field" style="width: 300px;">
+          <i class="material-icons prefix">search</i>
+          <input id="internship-search" type="text" placeholder="Search...">
+        </div>
+      </div>
+
+      <!-- Main content block -->
+      <div class="row">
+        <div class="col s12">
+          {% block content %}{% endblock %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Materialize JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('.tabs');
+        var instances = M.Tabs.init(elems);
+      });
+    </script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>
