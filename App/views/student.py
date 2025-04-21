@@ -3,6 +3,10 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, unset_jwt_cookies
 from App.controllers.internship import *
 from App.controllers.application import *
 from App.controllers.user import get_user
+import cloudinary.uploader
+
+
+
 
 student_views = Blueprint('student_views', __name__, template_folder='../templates')
 
@@ -30,16 +34,44 @@ def view_internship(internship_id):
 @jwt_required()
 def apply_internship(internship_id):
     user_id = int(get_jwt_identity())
-    data = request.form
-    resume = data.get('resume')
-    internship_id = internship_id
-    app = create_application(user_id, internship_id, resume)
+    resume_file = request.files.get('resume')
+
+    if not resume_file:
+        flash('No file uploaded.', 'error')
+        return redirect(url_for('student_views.student_dash'))
+
+    # Check if it's a PDF
+    filename = resume_file.filename
+    if not filename or not filename.lower().endswith('.pdf'):
+        flash('Only PDF files are allowed.', 'error')
+        return redirect(url_for('student_views.student_dash'))
+
+    # Clean and customize filename
+    base_filename = f"resume_student_{user_id}_internship_{internship_id}"
+
+    try:
+        upload_result = cloudinary.uploader.upload(
+            resume_file,
+            folder="resumes",           # Optional: organize in folder
+            public_id=base_filename,    # Use student/internship ID
+            use_filename=False,
+            unique_filename=False,
+            overwrite=True
+        )
+        resume_url = upload_result.get('secure_url')
+    except Exception as e:
+        flash(f'Upload error: {str(e)}', 'error')
+        return redirect(url_for('student_views.student_dash'))
+
+    # Create the application
+    app = create_application(user_id, internship_id, resume_url)
     if app:
         flash('Application submitted successfully!', 'success')
     else:
-        flash('Failed to submit application. You may have already applied.')
+        flash('You have already applied for this internship.', 'warning')
+
     return redirect(url_for('student_views.student_dash'))
-    
+
 @student_views.route('/student/delete_application/<int:application_id>', methods=['POST'])
 @jwt_required()
 def delete_application(application_id):

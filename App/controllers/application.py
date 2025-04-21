@@ -1,6 +1,8 @@
 from App.models import Application, Student, Internship
 from App.database import db
 
+
+
 def create_application(student_id, internship_id, resume=None):
     student = Student.query.get(student_id)
     internship = Internship.query.get(internship_id)
