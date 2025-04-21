@@ -1,28 +1,131 @@
-{% extends "new_layout.html" %}
+{% extends "dash_temp.html" %}
+
 {% block title %}Staff Dashboard{% endblock %}
 {% block page %}Staff Dashboard{% endblock %}
 
-{{ super() }}
+{% block tabs %}
+<div class="tabs-container center-align" style="margin-top: 20px;">
+  <a href="#" class="tab-link active" data-tab="internships">Internships</a>
+  <a href="#" class="tab-link" data-tab="applications">Applications</a>
+</div>
+{% endblock %}
+
+{% block search %}
+<div class="search-container center-align">
+  <div class="input-field" style="max-width: 300px; margin: 0 auto;">
+    <i class="material-icons prefix">search</i>
+    <input id="internship-search" type="text" placeholder="Search...">
+  </div>
+</div>
+{% endblock %}
 
 {% block content %}
-<h2>Welcome, {{ current_user.username }}</h2>
-<p>Here are the available internship opportunities:</p>
 
-{% if internships %}
-  <ul class="collection">
-    {% for internship in internships %}
-      <li class="collection-item">
-        <h5>{{ internship.title }}</h5>
-        <p><strong>Description:</strong> {{ internship.description }}</p>
+<!-- Internships -->
+<div id="internships" class="tab-content active scrollable-section">
+  {% for internship in internships %}
+  <div class="card horizontal z-depth-1 internship-card scrollable-cards"
+       style="display: flex;"
+       data-title="{{ internship.title | lower }}"
+       data-company="{{ internship.company.company_name | lower }}">
+    <div class="card-image center-align" style="padding: 20px;">
+      <i class="material-icons large">business_center</i>
+    </div>
+    <div class="card-stacked">
+      <div class="card-content">
+        <p><strong>Title:</strong> {{ internship.title }}</p>
+        <p><strong>Company:</strong> {{ internship.company.company_name }}</p>
         <p><strong>Duration:</strong> {{ internship.duration }}</p>
-        <p><strong>Posted by Company ID:</strong> {{ internship.company_id }}</p>
-        <a class="btn"  href="/staff/view_internship/{{internship.id}}">View Details</a>
-      </li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p>No internships available at this time.</p>
-{% endif %}
+        <p class="internship-description" style="display: none;"><strong>Description:</strong> {{ internship.description }}</p>
+      </div>
+      <div class="card-action right-align">
+        <a href="javascript:void(0);" class="toggle-button black-text" aria-expanded="false">+</a>
+        <a href="/staff/view_internship/{{ internship.id }}" class="view-more-link orange-text text-darken-2" style="display: none;">View More</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
 
+<!-- Applications -->
+<div id="applications" class="tab-content scrollable-section">
+  {% for application in applications %}
+  <div class="card horizontal z-depth-1 application-card scrollable-cards"
+       style="display: flex;"
+       data-status="{{ application.status | lower }}"
+       data-internship="{{ application.internship.title | lower }}">
+    <div class="card-image center-align" style="padding: 20px;">
+      <i class="material-icons large">assignment</i>
+    </div>
+    <div class="card-stacked">
+      <div class="card-content">
+        <p><strong>Student:</strong> {{ application.student.username }}</p>
+        <p><strong>Internship:</strong> {{ application.internship.title }}</p>
+        <p><strong>Status:</strong> {{ application.status }}</p>
+      </div>
+      <div class="card-action right-align">
+        <a href="/staff/view_application/{{ application.id }}" class="btn blue">View</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
 
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const tabs = document.querySelectorAll('.tab-link');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', function (e) {
+        e.preventDefault();
+        tabs.forEach(t => t.classList.remove('active'));
+        tabContents.forEach(tc => tc.classList.remove('active'));
+        this.classList.add('active');
+        const targetTab = this.dataset.tab;
+        document.getElementById(targetTab).classList.add('active');
+      });
+    });
+
+    const searchInput = document.getElementById('internship-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        const filter = this.value.toLowerCase();
+
+        document.querySelectorAll('.internship-card, .application-card').forEach(card => {
+          const title = card.getAttribute('data-title') || '';
+          const company = card.getAttribute('data-company') || '';
+          const status = card.getAttribute('data-status') || '';
+          const internship = card.getAttribute('data-internship') || '';
+          if (
+            title.includes(filter) || company.includes(filter) ||
+            status.includes(filter) || internship.includes(filter)
+          ) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    }
+
+    document.querySelectorAll('.toggle-button').forEach(button => {
+      button.addEventListener('click', function () {
+        const card = this.closest('.internship-card');
+        const desc = card.querySelector('.internship-description');
+        const viewMore = card.querySelector('.view-more-link');
+        const expanded = this.getAttribute('aria-expanded') === 'true';
+        desc.style.display = expanded ? 'none' : 'block';
+        viewMore.style.display = expanded ? 'none' : 'inline-block';
+        this.setAttribute('aria-expanded', !expanded);
+        this.textContent = expanded ? '+' : '−';
+      });
+    });
+  });
+</script>
 {% endblock %}
