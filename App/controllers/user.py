@@ -1,3 +1,4 @@
+
 from App.models import User, Student, Staff, Company
 from App.database import db
 
@@ -52,4 +53,3 @@ def update_user(id, username):
         db.session.add(user)
         return db.session.commit()
     return None
-    

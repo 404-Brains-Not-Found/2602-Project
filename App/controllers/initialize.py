@@ -1,3 +1,4 @@
+
 from .user import create_user
 from .application import create_application
 from .internship import create_internship
@@ -17,7 +18,8 @@ def initialize():
     if student and staff and company:
         internship = create_internship('Internship 1', 'Description 1', '1 month', company.id)
         if internship:
-            create_application(student.id, internship.id, 'path/to/resume')
-            add_to_shortlist(staff_id=staff.id, student_id=student.id, internship_id=internship.id)
+            app = create_application(student.id, internship.id, 'path/to/resume')
+            add_to_shortlist(staff_id=staff.id, application_id=app.id)
+
 
     

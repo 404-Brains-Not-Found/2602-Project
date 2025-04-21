@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, jsonify, request, flash, send_from_directory, flash, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, send_from_directory
 from flask_jwt_extended import jwt_required, current_user, unset_jwt_cookies, set_access_cookies
+from App.controllers.user import get_all_users, get_user_by_username
 
 
 from.index import index_views
@@ -9,9 +10,6 @@ from App.controllers import (
 )
 
 auth_views = Blueprint('auth_views', __name__, template_folder='../templates')
-
-
-
 
 '''
 Page/Action Routes
@@ -30,13 +28,20 @@ def identify_page():
 @auth_views.route('/login', methods=['POST'])
 def login_action():
     data = request.form
-    token = login(data['username'], data['password'])
-    response = redirect(request.referrer)
-    if not token:
-        flash('Bad username or password given'), 401
-    else:
-        flash('Login Successful')
-        set_access_cookies(response, token) 
+    role = data.get('role')
+    username = data.get('username')
+    password = data.get('password')
+
+    user = get_user_by_username(username)
+
+    if not user or not user.check_password(password) or user.__class__.__name__.lower() != role:
+        flash('Invalid credentials or role')
+        return redirect(request.referrer)
+
+    token = login(username, password)
+    response = redirect(url_for('index_views.index_page'))
+    set_access_cookies(response, token)
+    flash('Login successful')
     return response
 
 @auth_views.route('/logout', methods=['GET'])
