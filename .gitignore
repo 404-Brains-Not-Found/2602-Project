@@ -197,3 +197,4 @@ package.json
 package-lock.json
 App/controllers/__init__.py
 package-lock.json
+App/.env
