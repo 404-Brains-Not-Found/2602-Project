@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "new_layout.html" %}
 {% block title %}Staff Dashboard{% endblock %}
 {% block page %}Staff Dashboard{% endblock %}
 
@@ -24,18 +24,5 @@
   <p>No internships available at this time.</p>
 {% endif %}
 
-  <h4>Shortlisted Students</h4>
-  {% if shortlists %}
-    <ul class="collection">
-      {% for s in shortlists %}
-        <li class="collection-item">
-          Student ID: {{ s.student_id }}<br>
-          Internship ID: {{ s.internship_id }}<br>
-          Shortlisted by Staff ID: {{ s.staff_id }}
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No students shortlisted yet.</p>
-  {% endif %}
+
 {% endblock %}

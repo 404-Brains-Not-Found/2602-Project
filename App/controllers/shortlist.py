@@ -45,3 +45,21 @@ def get_all_shortlist():
 
 def get_all_shortlisted_json():
     return [s.get_json() for s in get_all_shortlist()]
+
+def remove_from_shortlist(application_id, staff_id):
+    application = Application.query.get(application_id)
+    staff = Staff.query.get(staff_id)
+
+    if not application:
+        return None, "Application not found"
+    if not staff:
+        return None, "Staff not found"
+
+    shortlist = Shortlist.query.filter_by(id=application.shortlist_id).first()
+    if not shortlist:
+        return None, "Shortlist not found"
+
+    # Remove application from shortlist
+    application.shortlist_id = None
+    db.session.commit()
+    return shortlist, "Application removed from shortlist"
