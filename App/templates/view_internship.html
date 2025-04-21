@@ -48,16 +48,18 @@
 
   <h5>Shortlisted Applications</h5>
   <ul class="collection">
-    {% for s in shortlisted_applications %}
+    {% for app in shortlist.applications %}
       <li class="collection-item">
-        <h5>Application for {{ s.internship.title }}</h5>
-        <p><strong>Status:</strong> {{ s.status }}</p>
-        <p><strong>Applied on:</strong> {{ s.applied_on }}</p>
-        <p><strong>Company ID:</strong> {{ s.internship.company_id }}</p>
-        <p><strong>Internship ID:</strong> {{ s.internship.id }}</p>
-        <a class="btn blue" href="">
-          View / Remove from Shortlist
-        </a>
+        <h5>Application for {{ app.internship.title }}</h5>
+        <p><strong>Status:</strong> {{ app.status }}</p>
+        <p><strong>Applied on:</strong> {{ app.applied_on }}</p>
+        <p><strong>Company ID:</strong> {{ app.internship.company_id }}</p>
+        <p><strong>Internship ID:</strong> {{ app.internship.id }}</p>
+        <form action="{{ url_for('staff_views.remove_shortlist', application_id=app.id) }}" method="POST">
+          <input type="hidden" name="application_id" value="{{ app.id }}">
+          <input type="hidden" name="internship_id" value="{{ internship.id }}">
+          <button class="btn blue" type="submit">View / Remove from Shortlist</button>
+        </form>
       </li>
     {% endfor %}
   </ul>

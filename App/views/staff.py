@@ -22,7 +22,7 @@ def view_internship(internship_id):
     internship = get_internship(internship_id)
     applications = get_applications_by_internship(internship_id)
     shortlisted_applications = get_shortlist_by_internship(internship_id)
-    return render_template('view_internship.html', internship=internship, applications=applications, shortlisted_applications=shortlisted_applications)
+    return render_template('view_internship.html', internship=internship, applications=applications, shortlist=shortlisted_applications)
 
 
 @staff_views.route('/staff/view_application/<int:application_id>', methods=['GET'])
@@ -44,4 +44,21 @@ def shortlist(application_id):
         flash('Application shortlisted successfully!', 'success')
     else:
         flash('Failed to shortlist application.', 'error')
-    return redirect(url_for('staff_views.staff_dash'))
+    return redirect(url_for('staff_views.view_internship', internship_id=internship_id))
+
+@staff_views.route('/staff/remove_shortlist/<int:application_id>', methods=['POST'])
+@jwt_required()
+def remove_shortlist(application_id):
+    user_id = int(get_jwt_identity())
+    app = get_application(application_id)
+    if app is None:
+        flash('Application not found.', 'error')
+        return redirect(url_for('staff_views.staff_dash'))
+    internship_id = app.internship_id
+    if remove_from_shortlist(staff_id=user_id, application_id=application_id):
+        flash('Application removed from shortlist successfully!', 'success')
+    else:
+        flash('Failed to remove application from shortlist.', 'error')
+    return redirect(url_for('staff_views.view_internship', internship_id=internship_id))
+
+    
