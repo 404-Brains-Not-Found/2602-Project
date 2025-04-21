@@ -6,6 +6,7 @@ class Student(User):
     id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     degree = db.Column(db.String(100))
     year = db.Column(db.String(20))
+    fullname = db.Column(db.String(100))
 
     __mapper_args__ = {
         'polymorphic_identity': 'student'
