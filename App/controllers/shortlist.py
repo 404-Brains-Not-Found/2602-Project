@@ -1,5 +1,6 @@
 from App.models import Shortlist, Application, Staff, Internship
 from App.database import db
+from App.models.company import Company
 
 def add_to_shortlist(application_id, staff_id):
     application = Application.query.get(application_id)
@@ -48,13 +49,14 @@ def get_all_shortlisted_json():
 
 def remove_from_shortlist(application_id, staff_id):
     application = Application.query.get(application_id)
-    staff = Staff.query.get(staff_id)
-
     if not application:
         return None, "Application not found"
+    staff = Staff.query.get(staff_id)
     if not staff:
-        return None, "Staff not found"
+        company = Company.query.get(staff_id)
 
+
+    
     shortlist = Shortlist.query.filter_by(id=application.shortlist_id).first()
     if not shortlist:
         return None, "Shortlist not found"

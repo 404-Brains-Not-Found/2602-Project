@@ -16,11 +16,31 @@
           <p><strong>Description:</strong> {{ internship.description }}</p>
           <p><strong>Duration:</strong> {{ internship.duration }}</p>
           <a class="btn"  href="/company/view_internship/{{internship.id}}">View Details</a>
+          <form action="/company/delete_internship/{{ internship.id }}" method="POST" style="display:inline;">
+            <button type="submit" class="btn red">Delete</button>
+          </form>
         </li>
       {% endfor %}
     </ul>
   {% else %}
     <p>No internships available at this time.</p>
   {% endif %}
+
+  <form action="/company/add_internship" method="POST">
+    <h3>Add a New Internship</h3>
+    <div class="input-field">
+      <input type="text" name="title" required>
+      <label for="title">Internship Title</label>
+    </div>
+    <div class="input-field">
+      <textarea name="description" class="materialize-textarea" required></textarea>
+      <label for="description">Description</label>
+    </div>
+    <div class="input-field">
+      <input type="text" name="duration" required>
+      <label for="duration">Duration</label>
+    </div>
+    <button type="submit" class="btn">Add Internship</button>
+  </form>
 
 {% endblock %}
