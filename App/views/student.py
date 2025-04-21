@@ -12,7 +12,7 @@ def student_dash():
     user_id = int(get_jwt_identity())
     internships = get_all_internships()
     applications = get_applications_by_student(user_id)
-    return render_template('student_dash.html', internships=internships, applications=applications, current_user=get_user(user_id))
+    return render_template('temp_dash.html', internships=internships, applications=applications, current_user=get_user(user_id))
 
 @student_views.route('/student/view_internship/<int:internship_id>', methods=['GET'])
 @jwt_required()
