@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block title %}Staff Dashboard{% endblock %}
+{% block page %}Staff Dashboard{% endblock %}
+
+{{ super() }}
+
+{% block content %}
+<h2>Welcome, {{ current_user.username }}</h2>
+<p>Here are the available internship opportunities:</p>
+
+{% if internships %}
+  <ul class="collection">
+    {% for internship in internships %}
+      <li class="collection-item">
+        <h5>{{ internship.title }}</h5>
+        <p><strong>Description:</strong> {{ internship.description }}</p>
+        <p><strong>Duration:</strong> {{ internship.duration }}</p>
+        <p><strong>Posted by Company ID:</strong> {{ internship.company_id }}</p>
+        <a class="btn"  href="/staff/view_internship/{{internship.id}}">View Details</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No internships available at this time.</p>
+{% endif %}
+
+  <h4>Shortlisted Students</h4>
+  {% if shortlists %}
+    <ul class="collection">
+      {% for s in shortlists %}
+        <li class="collection-item">
+          Student ID: {{ s.student_id }}<br>
+          Internship ID: {{ s.internship_id }}<br>
+          Shortlisted by Staff ID: {{ s.staff_id }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No students shortlisted yet.</p>
+  {% endif %}
+{% endblock %}

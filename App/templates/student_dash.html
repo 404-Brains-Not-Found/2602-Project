@@ -1,0 +1,46 @@
+{% extends "new_layout.html" %}
+{% block title %}Student Dashboard{% endblock %}
+{% block page %}Student Dashboard{% endblock %}
+
+{{ super() }}
+
+{% block content %}
+  <h2>Welcome, {{ current_user.username }}</h2>
+  <p>Here are the available internship opportunities:</p>
+
+  {% if internships %}
+    <ul class="collection">
+      {% for internship in internships %}
+        <li class="collection-item">
+          <h5>{{ internship.title }}</h5>
+          <p><strong>Description:</strong> {{ internship.description }}</p>
+          <p><strong>Duration:</strong> {{ internship.duration }}</p>
+          <p><strong>Posted by Company ID:</strong> {{ internship.company_id }}</p>
+          <a class="btn"  href="/student/view_internship/{{internship.id}}">View Details</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No internships available at this time.</p>
+  {% endif %}
+  {% if applications %}
+    <h3>Your Applications</h3>
+    <ul class="collection">
+      {% for application in applications %}
+        <li class="collection-item">
+          <h5>Application for {{ application.internship.title }}</h5>
+          <p><strong>Status:</strong> {{ application.status }}</p>
+          <p><strong>Applied on:</strong> {{ application.applied_on }}</p>
+          <p><strong>Company ID:</strong> {{ application.internship.company_id }}</p>
+          <p><strong>Internship ID:</strong> {{ application.internship.id }}</p>
+          <form method="POST" action="/student/delete_application/{{ application.id }}">
+            <button type="submit" class="btn red">Withdraw Application</button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>You have not applied for any internships yet.</p>
+  {% endif %}
+        
+{% endblock %}

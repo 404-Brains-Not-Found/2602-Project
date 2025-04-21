@@ -1,0 +1,85 @@
+{% extends "new_layout.html" %}
+{% block title %}Internship Details{% endblock %}
+{% block page %}Internship: {{ internship.title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-content">
+    <span class="card-title">{{ internship.title }}</span>
+    <p><strong>Description:</strong> {{ internship.description }}</p>
+    <p><strong>Duration:</strong> {{ internship.duration }}</p>
+    <p><strong>Posted By:</strong> {{ internship.company.username }}</p>
+  </div>
+
+  {% if current_user.role == 'student' %}
+    <div class="card-action">
+      {% if not showform%}
+      <a href="{{ url_for('student_views.view_internship', internship_id=internship.id, apply='true') }}" class="btn">Apply</a>
+      {% endif %}
+
+      {% if showform %}
+        <form action="{{ url_for('student_views.apply_internship', internship_id=internship.id) }}" method="POST">
+          <input type="hidden" name="internship_id" value="{{ internship.id }}">
+          <input type="hidden" name="student_id" value="{{ current_user.id }}">
+          <input type ="text" name="resume" placeholder="Resume Link" required>
+          <button class="btn blue" type="submit">Submit Application</button>
+        </form>
+      {% endif %}
+    </div>
+  {%endif%}
+</div>
+  
+{% if current_user.role == 'staff' %}
+  <h5>Applications</h5>
+  <ul class="collection">
+    {% for application in applications %}
+      <li class="collection-item">
+        <h5>Application for {{ application.internship.title }}</h5>
+        <p><strong>Status:</strong> {{ application.status }}</p>
+        <p><strong>Applied on:</strong> {{ application.applied_on }}</p>
+        <p><strong>Company ID:</strong> {{ application.internship.company_id }}</p>
+        <p><strong>Internship ID:</strong> {{ application.internship.id }}</p>
+        <a class="btn blue" href="{{ url_for('staff_views.view_application', application_id=application.id) }}">
+          View 
+        </a>
+      </li>
+    {% endfor %}
+  </ul>    
+
+  <h5>Shortlisted Applications</h5>
+  <ul class="collection">
+    {% for s in shortlisted_applications %}
+      <li class="collection-item">
+        <h5>Application for {{ s.internship.title }}</h5>
+        <p><strong>Status:</strong> {{ s.status }}</p>
+        <p><strong>Applied on:</strong> {{ s.applied_on }}</p>
+        <p><strong>Company ID:</strong> {{ s.internship.company_id }}</p>
+        <p><strong>Internship ID:</strong> {{ s.internship.id }}</p>
+        <a class="btn blue" href="">
+          View / Remove from Shortlist
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+
+
+{% if current_user.role == 'company' %}
+  <div id="applications">
+  <h5>Shortlist</h5>
+  <ul class="collection">
+    {% for s in shortlisted_applications %}
+      <li class="collection-item">
+        {{ s.student.username }}
+        <a class ="btn blue" href="">
+          View / Remove from Shortlist
+        </a>
+      </li>
+    {% else %}
+      <li class="collection-item">No students shortlisted.</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+</div>
+{% endblock %}

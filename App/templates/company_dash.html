@@ -1,0 +1,26 @@
+{% extends "new_layout.html" %}
+{% block title %}Company Dashboard{% endblock %}
+{% block page %}Company Dashboard{% endblock %}
+
+{{ super() }}
+
+{% block content %}
+  <h2>Welcome, {{ current_user.username }}</h2>
+  <p>Here are your internships:</p>
+
+  {% if internships %}
+    <ul class="collection">
+      {% for internship in internships %}
+        <li class="collection-item">
+          <h5>{{ internship.title }}</h5>
+          <p><strong>Description:</strong> {{ internship.description }}</p>
+          <p><strong>Duration:</strong> {{ internship.duration }}</p>
+          <a class="btn"  href="/company/view_internship/{{internship.id}}">View Details</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No internships available at this time.</p>
+  {% endif %}
+
+{% endblock %}

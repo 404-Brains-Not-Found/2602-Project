@@ -1,3 +1,4 @@
+
 from flask_jwt_extended import create_access_token, jwt_required, JWTManager, get_jwt_identity, verify_jwt_in_request
 
 from App.models import User
@@ -34,4 +35,5 @@ def add_auth_context(app):
           print(e)
           is_authenticated = False
           current_user = None
+
       return dict(is_authenticated=is_authenticated, current_user=current_user)
