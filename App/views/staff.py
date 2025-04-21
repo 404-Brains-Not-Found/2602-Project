@@ -40,10 +40,20 @@ def shortlist(application_id):
         flash('Application not found.', 'error')
         return redirect(url_for('staff_views.staff_dash'))
     internship_id = app.internship_id
-    if add_to_shortlist(staff_id=user_id, application_id=application_id):
-        flash('Application shortlisted successfully!', 'success')
-    else:
-        flash('Failed to shortlist application.', 'error')
+    data = request.form
+    if data.get('status') == 'shortlist':
+        update_application_status(application_id, 'shortlisted')
+        if add_to_shortlist(staff_id=user_id, application_id=application_id):
+            flash('Application shortlisted successfully!', 'success')
+        else:
+            flash('Failed to shortlist application.', 'error')
+    
+    if data.get('status') == 'reject':
+        update_application_status(application_id, 'rejected')
+        if update_application_status(application_id, 'rejected'):
+            flash('Application rejected successfully!', 'success')
+        else:
+            flash('Failed to reject application.', 'error')
     return redirect(url_for('staff_views.view_internship', internship_id=internship_id))
 
 @staff_views.route('/staff/remove_shortlist/<int:application_id>', methods=['POST'])

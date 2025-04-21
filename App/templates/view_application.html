@@ -16,14 +16,28 @@
             <p><strong>Applied On:</strong> {{ application.applied_on }}</p>
             </div>
             <div class="card-action">
+                {% if current_user.role == 'staff' %}
                 <form action="{{url_for('staff_views.shortlist', application_id=application.id)}}" method="POST">
                     <input type="hidden" name="application_id" value="{{ application.id }}">
                     <select name="status" id="status" class="browser-default" onchange="updateStatus(this.value)">
                         <option value="" disabled selected>Change Application Status</option>
-                        <option value="approved">Add to Shortlist</option>
+                        <option value="shortlist">Add to Shortlist</option>
                         <option value="rejected">Reject</option>
                     </select>
                     <button class="btn blue" type="submit">Update Application</button>
+                </form>
+                {% endif %}
+                {% if current_user.role == 'company' %}
+                <form action="{{url_for('company_views.update_application', application_id=application.id)}}" method="POST">
+                    <input type="hidden" name="application_id" value="{{ application.id }}">
+                    <select name="status" id="status" class="browser-default" onchange="updateStatus(this.value)">
+                        <option value="" disabled selected>Change Application Status</option>
+                        <option value="approved">Approve</option>
+                        <option value="rejected">Reject</option>
+                    </select>
+                    <button class="btn blue" type="submit">Update Application</button>
+                </form>
+                {% endif %}
             </div>
     </div>
 {%endblock%}

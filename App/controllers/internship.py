@@ -29,3 +29,16 @@ def get_internships_by_company(company_id):
 
 def get_internship_by_id(internship_id):
     return Internship.query.get(internship_id)
+
+def delete_internship_by_id(internship_id, company_id):
+    internship = Internship.query.filter_by(id=internship_id, company_id=company_id).first()
+    if internship:
+        apps = internship.applications
+        for app in apps:
+            db.session.delete(app)
+        if internship.shortlist:
+            db.session.delete(internship.shortlist)
+        db.session.delete(internship)
+        db.session.commit()
+        return True
+    return False
