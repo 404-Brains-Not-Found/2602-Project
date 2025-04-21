@@ -1,0 +1,29 @@
+{% extends "new_layout.html" %}
+{% block title %}Student Dashboard{% endblock %}
+{% block page %}Student Dashboard{% endblock %}
+
+{{ super() }}
+    
+    {% block content %}
+    <div class="card">
+        <span class="card-title">Application Information</span>
+           <div class="card-content">
+            <p><strong>Internship Title:</strong> {{ application.internship.title }}</p>
+            <p><strong>Company:</strong> {{ application.internship.company.username }}</p>
+            <p><strong>Application Status:</strong> {{ application.status }}</p>
+            <p><strong>Resume Link:</strong> <a href="{{ application.resume }}">{{ application.resume }}</a></p>
+            <p><strong>Student Name:</strong> {{application.student.username}}</p>
+            <p><strong>Applied On:</strong> {{ application.applied_on }}</p>
+            </div>
+            <div class="card-action">
+                <form action="{{ url_for('staff_views.shortlist, application_id=application.id) }}" method="POST">
+                    <input type="hidden" name="application_id" value="{{ application.id }}">
+                    <select name="status" id="status" class="browser-default" onchange="updateStatus(this.value)">
+                        <option value="" disabled selected>Change Application Status</option>
+                        <option value="approved">Add to Shortlist</option>
+                        <option value="rejected">Reject</option>
+                    <button class="btn blue" type="submit">Update Application</button>
+            </div>
+                
+    </div>
+{%endblock%}
