@@ -9,16 +9,21 @@
   <div class="col s12 m6 offset-m3">
     <div class="card">
       <div class="card-content">
+        {% if not showform %}
         <span class="card-title">Select Role to Login</span>
 
         <div class="center-align">
-          <button class="btn role-btn" data-role="student">Student</button>
-          <button class="btn role-btn blue" data-role="staff">Staff</button>
-          <button class="btn role-btn green" data-role="company">Company</button>
+          <a href="{{ url_for('auth_views.show_login', showform='true', role='student') }}" class="btn #b2f2bb" style="width: 100%;">Student</a><br><br>
+          <a href="{{ url_for('auth_views.show_login', showform='true', role='staff') }}" class="btn #b2f2bb" style="width: 100%;">Staff</a><br><br>
+          <a href="{{ url_for('auth_views.show_login', showform='true', role='company') }}" class="btn #b2f2bb" style="width: 100%;">Company</a><br><br>
+          <br><br>
+          <a href="{{ url_for('auth_views.show_signup')}}" class="btn #b2f2bb" style="width: 100%;">Sign Up</a><br><br>
         </div>
-
+        {%endif%}
+          
+        {% if showform %}
         <form method="POST" action="{{ url_for('auth_views.login_action') }}" style="margin-top: 20px;">
-          <input type="hidden" id="role" name="role" required>
+          <input type="hidden" id="role" name="role" value="{{role}}" required>
 
           <div class="input-field">
             <input id="username" name="username" type="text" required>
@@ -32,6 +37,7 @@
 
           <button class="btn waves-effect waves-light" type="submit">Login</button>
         </form>
+        {%endif%}
 
         {% with messages = get_flashed_messages() %}
           {% if messages %}
@@ -49,16 +55,6 @@
 </div>
 
 <script>
-  const buttons = document.querySelectorAll('.role-btn');
-  const roleInput = document.getElementById('role');
-
-  buttons.forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.preventDefault();
-      const selectedRole = btn.getAttribute('data-role');
-      roleInput.value = selectedRole;
-      M.toast({html: `Role selected: ${selectedRole}`});
-    });
-  });
+  
 </script>
 {% endblock %}

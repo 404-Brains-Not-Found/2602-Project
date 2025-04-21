@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, send_from_directory
 from flask_jwt_extended import jwt_required, current_user, unset_jwt_cookies, set_access_cookies
-from App.controllers.user import get_all_users, get_user_by_username
+from App.controllers.user import create_user, get_all_users, get_user_by_username
+from App.models.company import Company
+from App.models.student import Student
 
 
 from.index import index_views
@@ -25,6 +27,13 @@ def identify_page():
     return render_template('message.html', title="Identify", message=f"You are logged in as {current_user.id} - {current_user.username}")
     
 
+@auth_views.route('/login', methods=['GET'])
+def show_login():
+    showform = request.args.get('showform') == 'true'
+    role = request.args.get('role')
+    return render_template('login.html', title="Login", showform=showform, role=role)
+
+
 @auth_views.route('/login', methods=['POST'])
 def login_action():
     data = request.form
@@ -33,8 +42,9 @@ def login_action():
     password = data.get('password')
 
     user = get_user_by_username(username)
+    
 
-    if not user or not user.check_password(password) or user.__class__.__name__.lower() != role:
+    if not user or not user.check_password(password) or user.role != role:
         flash('Invalid credentials or role')
         return redirect(request.referrer)
 
@@ -46,11 +56,29 @@ def login_action():
 
 @auth_views.route('/logout', methods=['GET'])
 def logout_action():
-    response = redirect(request.referrer) 
+    response = redirect(url_for('auth_views.show_login'))
     flash("Logged Out!")
     unset_jwt_cookies(response)
-    return redirect(url_for('index_views.index'))
+    return response
 
+@auth_views.route('/signup', methods=['GET'])
+def show_signup():
+    return render_template('signup.html', title="Register")
+
+@auth_views.route('/signup', methods=['POST'])
+def signup_action():
+    data = request.form
+    username = data.get('username')
+    password = data.get('password')
+    role = data.get('role')
+
+    user = create_user(**data)
+    if not user:
+        flash('User already exists or invalid role')
+        return redirect(request.referrer)
+    return redirect(url_for('auth_views.show_login'))
+
+   
 '''
 API Routes
 '''
