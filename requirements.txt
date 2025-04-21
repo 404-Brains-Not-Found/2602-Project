@@ -16,3 +16,4 @@ Werkzeug==2.2.3
 gevent==25.4.1
 mysqlclient==2.2.7
 Flask-Admin==1.6.1
+cloudinary
