@@ -1,46 +1,128 @@
-{% extends "new_layout.html" %}
+{% extends "dash_temp.html" %}
+
 {% block title %}Company Dashboard{% endblock %}
 {% block page %}Company Dashboard{% endblock %}
 
-{{ super() }}
+{% block tabs %}
+<div class="tabs-container center-align" style="margin-top: 20px;">
+  <a href="#" class="tab-link active" data-tab="internships">My Internships</a>
+  <a href="#" class="tab-link" data-tab="applications">Applications</a>
+</div>
+{% endblock %}
+
+{% block search %}
+<div class="search-container center-align">
+  <div class="input-field" style="max-width: 300px; margin: 0 auto;">
+    <i class="material-icons prefix">search</i>
+    <input id="internship-search" type="text" placeholder="Search internships or applications...">
+  </div>
+</div>
+{% endblock %}
 
 {% block content %}
-  <h2>Welcome, {{ current_user.username }}</h2>
-  <p>Here are your internships:</p>
-
-  {% if internships %}
-    <ul class="collection">
-      {% for internship in internships %}
-        <li class="collection-item">
-          <h5>{{ internship.title }}</h5>
-          <p><strong>Description:</strong> {{ internship.description }}</p>
-          <p><strong>Duration:</strong> {{ internship.duration }}</p>
-          <a class="btn"  href="/company/view_internship/{{internship.id}}">View Details</a>
-          <form action="/company/delete_internship/{{ internship.id }}" method="POST" style="display:inline;">
-            <button type="submit" class="btn red">Delete</button>
-          </form>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No internships available at this time.</p>
-  {% endif %}
-
-  <form action="/company/add_internship" method="POST">
-    <h3>Add a New Internship</h3>
-    <div class="input-field">
-      <input type="text" name="title" required>
-      <label for="title">Internship Title</label>
+<!-- Internships Tab -->
+<div id="internships" class="tab-content active scrollable-section">
+  {% for internship in internships %}
+  <div class="card horizontal z-depth-1 internship-card scrollable-cards"
+       style="display: flex;"
+       data-title="{{ internship.title | lower }}"
+       data-duration="{{ internship.duration | lower }}">
+    <div class="card-image center-align" style="padding: 20px;">
+      <i class="material-icons large">work</i>
     </div>
-    <div class="input-field">
-      <textarea name="description" class="materialize-textarea" required></textarea>
-      <label for="description">Description</label>
+    <div class="card-stacked">
+      <div class="card-content">
+        <p><strong>Title:</strong> {{ internship.title }}</p>
+        <p><strong>Duration:</strong> {{ internship.duration }}</p>
+        <p class="internship-description" style="display: none;"><strong>Description:</strong> {{ internship.description }}</p>
+      </div>
+      <div class="card-action right-align">
+        <a href="javascript:void(0);" class="toggle-button black-text" aria-expanded="false">+</a>
+        <a href="/company/view_internship/{{ internship.id }}" class="view-more-link orange-text text-darken-2" style="display: none;">View Applicants</a>
+      </div>
     </div>
-    <div class="input-field">
-      <input type="text" name="duration" required>
-      <label for="duration">Duration</label>
-    </div>
-    <button type="submit" class="btn">Add Internship</button>
-  </form>
+  </div>
+  {% endfor %}
+</div>
 
+<!-- Applications Tab -->
+<div id="applications" class="tab-content scrollable-section">
+  {% for application in applications %}
+  <div class="card horizontal z-depth-1 application-card scrollable-cards" style="display: flex;"
+       data-student="{{ application.student.username | lower }}"
+       data-internship="{{ application.internship.title | lower }}">
+    <div class="card-image center-align" style="padding: 20px;">
+      <i class="material-icons large">assignment_ind</i>
+    </div>
+    <div class="card-stacked">
+      <div class="card-content">
+        <p><strong>Student:</strong> {{ application.student.username }}</p>
+        <p><strong>Internship:</strong> {{ application.internship.title }}</p>
+        <p><strong>Status:</strong> {{ application.status }}</p>
+      </div>
+      <div class="card-action right-align">
+        <form action="/company/view_app/{{ application.id }}" method="post" style="display: inline;">
+          <button type="submit" class="btn blue">View Application</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const tabs = document.querySelectorAll('.tab-link');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', function (e) {
+        e.preventDefault();
+        tabs.forEach(t => t.classList.remove('active'));
+        tabContents.forEach(tc => tc.classList.remove('active'));
+        this.classList.add('active');
+        const targetTab = this.dataset.tab;
+        document.getElementById(targetTab).classList.add('active');
+      });
+    });
+
+    const searchInput = document.getElementById('internship-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        const filter = this.value.toLowerCase();
+
+        document.querySelectorAll('.internship-card, .application-card').forEach(card => {
+          const title = card.getAttribute('data-title') || '';
+          const duration = card.getAttribute('data-duration') || '';
+          const student = card.getAttribute('data-student') || '';
+          const internship = card.getAttribute('data-internship') || '';
+
+          if (
+            title.includes(filter) || duration.includes(filter) ||
+            student.includes(filter) || internship.includes(filter)
+          ) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    }
+
+    document.querySelectorAll('.toggle-button').forEach(button => {
+      button.addEventListener('click', function () {
+        const card = this.closest('.internship-card');
+        const desc = card.querySelector('.internship-description');
+        const viewMore = card.querySelector('.view-more-link');
+        const expanded = this.getAttribute('aria-expanded') === 'true';
+        desc.style.display = expanded ? 'none' : 'block';
+        viewMore.style.display = expanded ? 'none' : 'inline-block';
+        this.setAttribute('aria-expanded', !expanded);
+        this.textContent = expanded ? '+' : '−';
+      });
+    });
+  });
+</script>
 {% endblock %}

@@ -1,46 +1,154 @@
-{% extends "new_layout.html" %}
+{% extends "dash_temp.html" %}
+
 {% block title %}Student Dashboard{% endblock %}
 {% block page %}Student Dashboard{% endblock %}
 
-{{ super() }}
+{% block tabs %}
+<div class="tabs-container center-align" style="margin-top: 20px;">
+  <a href="#" class="tab-link active" data-tab="internships">Internships</a>
+  <a href="#" class="tab-link" data-tab="applications">Applications</a>
+</div>
+{% endblock %}
+
+{% block search %}
+<div class="search-container center-align">
+  <div class="input-field" style="max-width: 300px; margin: 0 auto;">
+    <i class="material-icons prefix">search</i>
+    <input id="internship-search" type="text" placeholder="Search internships...">
+  </div>
+</div>
+{% endblock %}
 
 {% block content %}
-  <h2>Welcome, {{ current_user.username }}</h2>
-  <p>Here are the available internship opportunities:</p>
+<!-- Internships Tab -->
+<div id="internships" class="tab-content active scrollable-section">
+  {% for internship in internships %}
+  <div class="card horizontal z-depth-1 internship-card scrollable-cards"
+       style="display: flex;"
+       data-title="{{ internship.title | lower }}"
+       data-company="{{ internship.company.company_name | lower }}">
+    <div class="card-image center-align" style="padding: 20px;">
+      <i class="material-icons large">badge</i>
+    </div>
+    <div class="card-stacked">
+      <div class="card-content">
+        <p><strong>Company:</strong> {{ internship.company.company_name }}</p>
+        <p><strong>Position:</strong> {{ internship.title }}</p>
+        <p><strong>Duration:</strong> {{ internship.duration }}</p>
+        <p class="internship-description" style="display: none;"><strong>Description:</strong> {{ internship.description }}</p>
+      </div>
+      <div class="card-action right-align">
+        <a href="javascript:void(0);" class="toggle-button black-text" aria-expanded="false">+</a>
+        <a href="{{ url_for('student_views.view_internship', internship_id=internship.id) }}" class="view-more-link orange-text text-darken-2" style="display: none;">VIEW MORE</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
 
-  {% if internships %}
-    <ul class="collection">
-      {% for internship in internships %}
-        <li class="collection-item">
-          <h5>{{ internship.title }}</h5>
-          <p><strong>Description:</strong> {{ internship.description }}</p>
-          <p><strong>Duration:</strong> {{ internship.duration }}</p>
-          <p><strong>Posted by Company ID:</strong> {{ internship.company_id }}</p>
-          <a class="btn"  href="/student/view_internship/{{internship.id}}">View Details</a>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No internships available at this time.</p>
-  {% endif %}
-  {% if applications %}
-    <h3>Your Applications</h3>
-    <ul class="collection">
-      {% for application in applications %}
-        <li class="collection-item">
-          <h5>Application for {{ application.internship.title }}</h5>
-          <p><strong>Status:</strong> {{ application.status }}</p>
-          <p><strong>Applied on:</strong> {{ application.applied_on }}</p>
-          <p><strong>Company ID:</strong> {{ application.internship.company_id }}</p>
-          <p><strong>Internship ID:</strong> {{ application.internship.id }}</p>
-          <form method="POST" action="/student/delete_application/{{ application.id }}">
-            <button type="submit" class="btn red">Withdraw Application</button>
-          </form>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>You have not applied for any internships yet.</p>
-  {% endif %}
-        
+<!-- Applications Tab -->
+<div id="applications" class="tab-content scrollable-section">
+  {% for application in applications %}
+  <div class="card horizontal z-depth-1 application-card scrollable-cards" style="display: flex;"
+       data-status="{{ application.status | lower }}"
+       data-internship="{{ application.internship.title | lower }}">
+    <div class="card-image center-align scrollable-cards" style="padding: 20px;">
+      <i class="material-icons large">assignment</i>
+    </div>
+    <div class="card-stacked">
+      <div class="card-content">
+        <p><strong>Internship:</strong> {{ application.internship.title }}</p>
+        <p><strong>Status:</strong> {{ application.status }}</p>
+        <p><strong>Applied on:</strong> {{ application.applied_on }}</p>
+      </div>
+      <div class="card-action right-align">
+        <form method="POST" action="{{ url_for('student_views.delete_application', application_id=application.id) }}">
+          <button type="submit" class="btn red">Withdraw Application</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // Tabs Logic
+    const tabs = document.querySelectorAll('.tab-link');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', function (e) {
+        e.preventDefault();
+        tabs.forEach(t => t.classList.remove('active'));
+        tabContents.forEach(tc => tc.classList.remove('active'));
+        this.classList.add('active');
+        const targetTab = this.dataset.tab;
+        document.getElementById(targetTab).classList.add('active');
+      });
+    });
+
+    // Search Logic
+    
+    
+
+    const searchInput = document.getElementById('internship-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        const filter = this.value.toLowerCase();
+        console.log(filter);
+        const cards = document.querySelectorAll('#internships .internship-card');
+
+        cards.forEach(card => {
+          const title = card.getAttribute('data-title') || '';
+          const company = card.getAttribute('data-company') || '';
+          if (title.includes(filter) || company.includes(filter)) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        const applicationCards = document.querySelectorAll('#applications .application-card');
+        applicationCards.forEach(card => {
+          const status = card.getAttribute('data-status') || '';
+          const internship = card.getAttribute('data-internship') || '';
+          if (status.includes(filter) || internship.includes(filter)) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+
+      });
+    }
+
+   // Toggle Description Logic
+    const toggleButtons = document.querySelectorAll('.toggle-button');
+    toggleButtons.forEach(button => {
+      button.addEventListener('click', function () {
+        const card = this.closest('.internship-card');
+        const description = card.querySelector('.internship-description');
+        const viewMoreLink = card.querySelector('.view-more-link');
+        if (description.style.display === 'none') {
+          description.style.display = 'block';
+          viewMoreLink.style.display = 'block';
+          this.textContent = '-';
+        } else {
+          description.style.display = 'none';
+          viewMoreLink.style.display = 'none';
+          this.textContent = '+';
+        }
+      });
+    });
+
+
+  });
+</script>
+
 {% endblock %}

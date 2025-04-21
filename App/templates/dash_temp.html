@@ -13,21 +13,36 @@
       body {
         background-color: #f9f9f9;
       }
+
       
+      .scrollable-cards{
+        box-shadow: none;
+        border: 1px solid #ddd;
+        border-radius: 0px;
+        padding: 0px;
+        margin: 0px;
+      }
+
       .scrollable-section {
         max-height: 400px; /* or whatever height you want */
+        min-height: 100px;
         overflow-y: auto;
         padding-right: 10px; /* for scrollbar spacing */
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        background-color: #fff;
+        border: 2px solid #ef0101;
+        border-radius: 2px;
+        background-color: #fdfcfc;
+        margin: 0px;
+        margin-left: -10px;
+        margin-right: -10px;
       }
+
       .tab-border {
         border: 2px solid #ddd;
-        border-radius: 8px;
+        border-radius: 2px;
         padding: 10px;
         background-color: #fff;
-        margin-bottom: 1rem;
+        margin-bottom: 0px;
+        border-bottom: none;
     }
 
       .tabs .tab a {
@@ -43,6 +58,9 @@
         display: flex;
         justify-content: center;
         padding: 1rem;
+        border-radius: 2px;
+        border: 2px solid #ddd;
+        margin-top: 0;
       }
       .card-action .btn-flat {
         margin-right: 1rem;
@@ -62,15 +80,16 @@
       <div class="nav-wrapper container">
         <span class="black-text" style="font-size: 1.5rem; font-weight: bold;">ResuMeup</span>
         <ul class="right">
-          <li><span class="black-text">{{ current_user.username }}</span></li>
-          <li><i class="material-icons black-text">account_circle</i></li>
+            <li><span class="black-text">{{ current_user.username }}</span></li>
+            <li><i class="material-icons black-text">account_circle</i></li>
+            <li><a href="{{ url_for('auth_views.logout_action') }}" class="black-text">Logout</a></li>   
         </ul>
       </div>
     </nav>
 
     <!-- Tab Navigation -->
-    <div class="container tab-border">
-      <div class="row">
+    <div class="container">
+      <div class="row tab-border">
         <div class="col s12">
           <ul class="tabs">
             <li class="tab col s6"><a class="active" href="#internships">Internships</a></li>
