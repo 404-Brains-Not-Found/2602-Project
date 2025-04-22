@@ -23,7 +23,9 @@ def index_page():
         return redirect(url_for('staff_views.staff_dash'))
     elif current_user.role == 'company':
         return redirect(url_for('company_views.company_dash'))
-    return redirect(url_for('auth_views.login_action'))
+
+    return redirect(url_for('auth_views.login_action'))  # fallback
+
 
 @index_views.route('/init', methods=['GET'])
 def init():
@@ -32,4 +34,4 @@ def init():
 
 @index_views.route('/health', methods=['GET'])
 def health_check():
-    return jsonify({'status': 'healthy'})
+    return jsonify({'status':'healthy'})

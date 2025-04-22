@@ -9,6 +9,8 @@ class Internship(db.Model):
     company_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     company = db.relationship('Company', foreign_keys=[company_id])
+    
+    # One-to-one relationship
     shortlist = db.relationship('Shortlist', back_populates='internship', uselist=False)
 
     def get_json(self):
