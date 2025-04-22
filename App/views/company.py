@@ -4,7 +4,11 @@ from App.controllers.application import get_application, get_applications_by_int
 from App.controllers.internship import *
 from App.controllers.shortlist import *
 
+
+
 company_views = Blueprint('company_views', __name__, template_folder='../templates')
+
+
 
 @company_views.route('/company_dash')
 @jwt_required()
@@ -12,6 +16,7 @@ def company_dash():
     user_id = int(get_jwt_identity())
     internships = get_internships_by_company(user_id)
 
+    # Gather all applications related to this company's internships
     applications = []
     for internship in internships:
         internship_apps = get_applications_by_internship(internship.id)
@@ -19,6 +24,7 @@ def company_dash():
         applications.extend(shortlisted)
 
     return render_template('company_dash.html', internships=internships, applications=applications)
+
 
 @company_views.route('/company/view_internship/<int:internship_id>', methods=['GET'])
 @jwt_required()

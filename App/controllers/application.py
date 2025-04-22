@@ -1,6 +1,8 @@
 from App.models import Application, Student, Internship
 from App.database import db
 
+
+
 def create_application(student_id, internship_id, resume=None):
     student = Student.query.get(student_id)
     internship = Internship.query.get(internship_id)
@@ -10,7 +12,7 @@ def create_application(student_id, internship_id, resume=None):
 
     existing = Application.query.filter_by(student_id=student_id, internship_id=internship_id).first()
     if existing:
-        return None
+        return None  # prevent duplicate applications
 
     app = Application(student_id=student_id, internship_id=internship_id, resume=resume)
     db.session.add(app)

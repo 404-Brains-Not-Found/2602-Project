@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, unset_jwt_cookies, set_access_cookies
 from App.controllers.user import *
 from App.controllers.internship import *
 from App.controllers.application import *
@@ -24,6 +24,7 @@ def view_internship(internship_id):
     shortlisted_applications = get_shortlist_by_internship(internship_id)
     return render_template('view_internship.html', internship=internship, applications=applications, shortlist=shortlisted_applications)
 
+
 @staff_views.route('/staff/view_application/<int:application_id>', methods=['GET'])
 @jwt_required()
 def view_application(application_id):
@@ -46,6 +47,7 @@ def shortlist(application_id):
             flash('Application shortlisted successfully!', 'success')
         else:
             flash('Failed to shortlist application.', 'error')
+    
     if data.get('status') == 'reject':
         update_application_status(application_id, 'rejected')
         if update_application_status(application_id, 'rejected'):
@@ -69,3 +71,4 @@ def remove_shortlist(application_id):
         flash('Failed to remove application from shortlist.', 'error')
     return redirect(url_for('staff_views.view_internship', internship_id=internship_id))
 
+    

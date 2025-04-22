@@ -20,6 +20,7 @@
 {% endblock %}
 
 {% block content %}
+<!-- Internships Tab -->
 <div id="internships" class="tab-content active scrollable-section">
   {% for internship in internships %}
   <div class="card horizontal z-depth-1 internship-card scrollable-cards"
@@ -45,6 +46,7 @@
   {% endfor %}
 </div>
 
+<!-- Applications Tab -->
 <div id="applications" class="tab-content scrollable-section">
   {% for application in applications %}
   <div class="card horizontal z-depth-1 application-card scrollable-cards" style="display: flex;"
@@ -72,7 +74,10 @@
 
 {% block scripts %}
 <script>
+    
+
   document.addEventListener('DOMContentLoaded', function () {
+    // Tabs Logic
     const tabs = document.querySelectorAll('.tab-link');
     const tabContents = document.querySelectorAll('.tab-content');
 
@@ -87,10 +92,15 @@
       });
     });
 
+    // Search Logic
+    
+    
+
     const searchInput = document.getElementById('internship-search');
     if (searchInput) {
       searchInput.addEventListener('input', function () {
         const filter = this.value.toLowerCase();
+        console.log(filter);
         const cards = document.querySelectorAll('#internships .internship-card');
 
         cards.forEach(card => {
@@ -113,9 +123,12 @@
             card.style.display = 'none';
           }
         });
+
+
       });
     }
 
+   // Toggle Description Logic
     const toggleButtons = document.querySelectorAll('.toggle-button');
     toggleButtons.forEach(button => {
       button.addEventListener('click', function () {
@@ -133,6 +146,9 @@
         }
       });
     });
+
+
   });
 </script>
+
 {% endblock %}

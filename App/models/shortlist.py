@@ -7,6 +7,7 @@ class Shortlist(db.Model):
     staff_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     internship_id = db.Column(db.Integer, db.ForeignKey('internship.id'), unique=True, nullable=False)
 
+    # Relationships
     staff = db.relationship('Staff', backref='created_shortlists')
     internship = db.relationship('Internship')
     applications = db.relationship('Application', backref='shortlist')
