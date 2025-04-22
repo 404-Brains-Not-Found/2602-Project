@@ -15,10 +15,8 @@ def add_to_shortlist(application_id, staff_id):
     if not internship:
         return None, "Internship not found"
 
-    # Check if a shortlist already exists for this internship
     shortlist = Shortlist.query.filter_by(internship_id=internship.id).first()
     if not shortlist:
-        # Create a new shortlist if not exists
         shortlist = Shortlist(
             internship_id=internship.id,
             staff_id=staff.id
@@ -26,11 +24,9 @@ def add_to_shortlist(application_id, staff_id):
         db.session.add(shortlist)
         db.session.commit()
 
-    # Prevent duplicate application on shortlist
     if application.shortlist_id == shortlist.id:
         return None, "Application already shortlisted"
 
-    # Add application to shortlist
     application.shortlist_id = shortlist.id
     db.session.commit()
     return shortlist, "Application added to shortlist"
@@ -55,13 +51,10 @@ def remove_from_shortlist(application_id, staff_id):
     if not staff:
         company = Company.query.get(staff_id)
 
-
-    
     shortlist = Shortlist.query.filter_by(id=application.shortlist_id).first()
     if not shortlist:
         return None, "Shortlist not found"
 
-    # Remove application from shortlist
     application.shortlist_id = None
     db.session.commit()
     return shortlist, "Application removed from shortlist"

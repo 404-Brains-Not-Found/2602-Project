@@ -1,9 +1,8 @@
-
 from App.models import User, Student, Staff, Company
 from App.database import db
 
 def create_user(username, password, role, **kwargs):
-    if get_user_by_username(username):  # prevent duplicates
+    if get_user_by_username(username):
         return None
 
     new_user = None
@@ -14,7 +13,6 @@ def create_user(username, password, role, **kwargs):
         f_name = kwargs.get('f_name')
         l_name = kwargs.get('l_name')
         new_user = Student(username, password, degree, year, f_name, l_name)
-        
 
     elif role == 'staff':
         full_name = kwargs.get('full_name')
@@ -27,7 +25,7 @@ def create_user(username, password, role, **kwargs):
         new_user = Company(username, password, company_name, website)
 
     else:
-        return None  # invalid role
+        return None
 
     db.session.add(new_user)
     db.session.commit()

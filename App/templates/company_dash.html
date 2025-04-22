@@ -20,12 +20,10 @@
 {% endblock %}
 
 {% block content %}
-<!-- Create Internship Button -->
 <div class="center-align" style="margin-bottom: 20px;">
   <button class="btn green" id="toggle-create-form">Create New Internship</button>
 </div>
 
-<!-- Hidden Create Internship Form -->
 <div id="create-form" style="display: none; margin-bottom: 30px;" class="card z-depth-2">
   <div class="card-content">
     <span class="card-title">New Internship</span>
@@ -52,7 +50,6 @@
   </div>
 </div>
 
-<!-- Internships Tab -->
 <div id="internships" class="tab-content active scrollable-section">
   {% for internship in internships %}
   <div class="card horizontal z-depth-1 internship-card scrollable-cards"
@@ -77,7 +74,6 @@
   {% endfor %}
 </div>
 
-<!-- Applications Tab -->
 <div id="applications" class="tab-content scrollable-section">
   {% for application in applications %}
   <div class="card horizontal z-depth-1 application-card scrollable-cards" style="display: flex;"
