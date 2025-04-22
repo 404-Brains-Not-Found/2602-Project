@@ -11,7 +11,10 @@ def create_user(username, password, role, **kwargs):
     if role == 'student':
         degree = kwargs.get('degree')
         year = kwargs.get('year')
-        new_user = Student(username, password, degree, year)
+        f_name = kwargs.get('f_name')
+        l_name = kwargs.get('l_name')
+        new_user = Student(username, password, degree, year, f_name, l_name)
+        
 
     elif role == 'staff':
         full_name = kwargs.get('full_name')

@@ -1,9 +1,9 @@
-{% extends "new_layout.html" %}
+{% extends "view_temp.html" %}
 {% block title %}Internship Details{% endblock %}
 {% block page %}Internship: {{ internship.title }}{% endblock %}
 
 {% block content %}
-<div class="card">
+<div class="card z-depth-2">
   <div class="card-content">
     <span class="card-title">{{ internship.title }}</span>
     <p><strong>Description:</strong> {{ internship.description }}</p>
@@ -12,89 +12,82 @@
   </div>
 
   {% if current_user.role == 'student' %}
-    <div class="card-action">
-      {% if not showform%}
-      <a href="{{ url_for('student_views.view_internship', internship_id=internship.id, apply='true') }}" class="btn">Apply</a>
-      {% endif %}
+  <div class="card-action">
+    {% if not showform %}
+      <a href="{{ url_for('student_views.view_internship', internship_id=internship.id, apply='true') }}" class="btn blue">Apply</a>
+    {% endif %}
 
-      {% if showform %}
+    {% if showform %}
       <form action="{{ url_for('student_views.apply_internship', internship_id=internship.id) }}" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="internship_id" value="{{ internship.id }}">
         <input type="hidden" name="student_id" value="{{ current_user.id }}">
-      
+
         <div class="file-field input-field">
           <div class="btn blue">
             <span>Upload Resume</span>
             <input type="file" name="resume" accept=".pdf" required>
           </div>
           <div class="file-path-wrapper">
-            <input class="file-path validate" type="text" placeholder="Upload your resume">
+            <input class="file-path validate" type="text" placeholder="Upload your resume (PDF only)">
           </div>
         </div>
-      
-        <button class="btn blue" type="submit">Submit Application</button>
-      </form>
-      {% endif %}
-    </div>
-  {%endif%}
-</div>
-  
-{% if current_user.role == 'staff' %}
-  <h5>Applications</h5>
-  <ul class="collection">
-    {% for application in applications %}
-      <li class="collection-item">
-        <h5>Application for {{ application.internship.title }}</h5>
-        <p><strong>Status:</strong> {{ application.status }}</p>
-        <p><strong>Applied on:</strong> {{ application.applied_on }}</p>
-        <p><strong>Company ID:</strong> {{ application.internship.company_id }}</p>
-        <p><strong>Internship ID:</strong> {{ application.internship.id }}</p>
-        <a class="btn blue" href="{{ url_for('staff_views.view_application', application_id=application.id) }}">
-          View 
-        </a>
-      </li>
-    {% endfor %}
-  </ul>    
 
-  <h5>Shortlisted Applications</h5>
-  <ul class="collection">
-    {% for app in shortlist.applications %}
-      <li class="collection-item">
-        <h5>Application for {{ app.internship.title }}</h5>
-        <p><strong>Status:</strong> {{ app.status }}</p>
-        <p><strong>Applied on:</strong> {{ app.applied_on }}</p>
-        <p><strong>Company ID:</strong> {{ app.internship.company_id }}</p>
-        <p><strong>Internship ID:</strong> {{ app.internship.id }}</p>
+        <button class="btn green darken-1" type="submit">Submit Application</button>
+      </form>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+
+{% if current_user.role == 'staff' %}
+  <h5 class="black-text">Applications</h5>
+  <div class="scrollable-section" style="max-height: 300px;">
+    <ul class="collection">
+      {% for application in applications %}
+      <li class="collection-item scrollable-cards">
+        <h6><strong>{{ application.internship.title }}</strong></h6>
+        <p>Status: {{ application.status }}</p>
+        <p>Applied on: {{ application.applied_on }}</p>
+        <a class="btn blue" href="{{ url_for('staff_views.view_application', application_id=application.id) }}">View</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <h5 class="black-text">Shortlisted Applications</h5>
+  <div class="scrollable-section" style="max-height: 300px;">
+    <ul class="collection">
+      {% for app in shortlist.applications %}
+      <li class="collection-item scrollable-cards">
+        <h6><strong>{{ app.internship.title }}</strong></h6>
+        <p>Status: {{ app.status }}</p>
         <form action="{{ url_for('staff_views.remove_shortlist', application_id=app.id) }}" method="POST">
           <input type="hidden" name="application_id" value="{{ app.id }}">
           <input type="hidden" name="internship_id" value="{{ internship.id }}">
-          <button class="btn blue" type="submit">View / Remove from Shortlist</button>
+          <button class="btn red lighten-1" type="submit">Remove from Shortlist</button>
         </form>
       </li>
-    {% endfor %}
-  </ul>
+      {% endfor %}
+    </ul>
+  </div>
 {% endif %}
 
-
-
 {% if current_user.role == 'company' %}
-<h5>Shortlisted Applications</h5>
-<ul class="collection">
-  {% for app in shortlist.applications %}
-    <li class="collection-item">
-      <h5>Application for {{ app.internship.title }}</h5>
-      <p><strong>Status:</strong> {{ app.status }}</p>
-      <p><strong>Applied on:</strong> {{ app.applied_on }}</p>
-      <p><strong>Company ID:</strong> {{ app.internship.company_id }}</p>
-      <p><strong>Internship ID:</strong> {{ app.internship.id }}</p>
-      <form action="{{ url_for('company_views.view_app', application_id=app.id) }}" method="POST">
-        <input type="hidden" name="application_id" value="{{ app.id }}">
-        <input type="hidden" name="internship_id" value="{{ internship.id }}">
-        <button class="btn blue" type="submit">View</button>
-      </form>
-    </li>
-  {% endfor %}
-</ul>
-  
+  <h5 class="black-text">Shortlisted Applications</h5>
+  <div class="scrollable-section" style="max-height: 300px;">
+    <ul class="collection">
+      {% for app in shortlist.applications %}
+      <li class="collection-item scrollable-cards">
+        <h6><strong>{{ app.internship.title }}</strong></h6>
+        <p>Status: {{ app.status }}</p>
+        <form action="{{ url_for('company_views.view_app', application_id=app.id) }}" method="POST">
+          <input type="hidden" name="application_id" value="{{ app.id }}">
+          <input type="hidden" name="internship_id" value="{{ internship.id }}">
+          <button class="btn blue" type="submit">View</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
 {% endif %}
 {% endblock %}

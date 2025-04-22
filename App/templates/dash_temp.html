@@ -11,78 +11,125 @@
 
     <style>
       body {
-        background-color: #f9f9f9;
-      }
-
-      
-      .scrollable-cards{
+        background-color: #4a6cf7; /* bright blue */
+        font-family: 'Courier New', monospace;
+        color: black;
         box-shadow: none;
-        border: 1px solid #ddd;
-        border-radius: 0px;
-        padding: 0px;
-        margin: 0px;
       }
 
-      .scrollable-section {
-        max-height: 400px; /* or whatever height you want */
-        min-height: 100px;
-        overflow-y: auto;
-        padding-right: 10px; /* for scrollbar spacing */
-        border: 2px solid #ef0101;
-        border-radius: 2px;
-        background-color: #fdfcfc;
-        margin: 0px;
-        margin-left: -10px;
-        margin-right: -10px;
+      nav {
+        background-color: #b783f1 !important; /* purple nav */
+        border-bottom: none
+     }
+
+      .nav-wrapper a,
+      .nav-wrapper i,
+      .nav-wrapper span {
+        color: black !important;
+        font-weight: bold;
+      }
+
+      .tabs .tab a {
+        color: #000 !important;
+        font-weight: bold;
+      }
+
+      .tabs .tab a.active {
+        background-color: #b783f1 !important;
+        color: #000 !important;
+        border: 2px solid black;
+        border-bottom: none;
       }
 
       .tab-border {
-        border: 2px solid #ddd;
-        border-radius: 2px;
+        border: 1px solid black;
+        border-top: none;
+        background-color: #b2f2bb;
         padding: 10px;
-        background-color: #fff;
-        margin-bottom: 0px;
-        border-bottom: none;
-    }
+        border-radius: 0;
+        margin: 0;
+      }
 
-      .tabs .tab a {
-        color: #1976d2;
-      }
-      .tabs .tab a.active {
-        font-weight: bold;
-      }
-      .card .card-content img {
-        width: 60px;
-      }
       .search-container {
         display: flex;
         justify-content: center;
         padding: 1rem;
-        border-radius: 2px;
-        border: 2px solid #ddd;
-        margin-top: 0;
+        border: 1px solid black;
+        border-radius: 0;
+        background-color: #b783f1;
+        box-shadow: none;
+        height: 50px;
       }
-      .card-action .btn-flat {
-        margin-right: 1rem;
+
+      .input-field input {
+        border-bottom: 2px solid black !important;
+      }
+
+      .scrollable-section {
+        max-height: 400px;
+        overflow-y: auto;
+        background-color: #fefefe;
+        border: 2px solid black;
+        border-radius: 0;
+        margin: 0 -10px;
+        padding-right: 10px;
+      }
+
+      .scrollable-cards {
+        border: 2px solid black;
+        background-color: #fff;
+        margin-bottom: 10px;
+        padding: 10px;
+        margin-left: 10px;
+        box-shadow: none;
+      }
+
+      .card-content p {
+        margin: 5px 0;
+      }
+
+      .card-action a,
+      .btn,
+      button {
+        background-color: #b2f2bb !important;
+        color: black !important;
+        font-weight: bold;
+        border: 2px solid black;
+      }
+
+      .btn:hover,
+      button:hover {
+        background-color: #a0e6a0 !important;
+      }
+
+      .card-action a.view-more-link {
+        color: #d35400 !important;
+        font-weight: bold;
+        
       }
 
       .content-border {
-        border: 2px solid #ddd;
-        border-radius: 8px;
+        border: 2px solid black;
+        background-color: #ffffff;
         padding: 20px;
-        background-color: #fff;
-      }     
+      }
+
+      .indicator {
+        background-color: black !important;
+      }
+
+      
     </style>
   </head>
 
   <body>
-    <nav class="white z-depth-0">
+    <nav>
       <div class="nav-wrapper container">
-        <a href="/home" class="black-text" style="font-size: 1.5rem; font-weight: bold;">ResuMeup</a>
+        <a href="/home" class="brand-logo">ResuMeup</a>
         <ul class="right">
-            <li><span class="black-text">{{ current_user.username }}</span></li>
-            <li><i class="material-icons black-text">account_circle</i></li>
-            <li><a href="{{ url_for('auth_views.logout_action') }}" class="black-text">Logout</a></li>   
+          <li><span>{{ current_user.username }}</span></li>
+          <li><i class="material-icons">account_circle</i></li>
+          <li><a href="{{ url_for('auth_views.logout_action') }}">Logout</a></li>   
         </ul>
       </div>
     </nav>
@@ -100,9 +147,9 @@
 
       <!-- Search Box -->
       <div class="search-container">
-        <div class="input-field" style="width: 300px;">
+        <div class="input-field" style="width: 300px; align-self: center;">
           <i class="material-icons prefix">search</i>
-          <input id="internship-search" type="text" placeholder="Search...">
+          <input id="internship-search" class="bold black-text" type="text" placeholder="Search...">
         </div>
       </div>
 
@@ -122,6 +169,16 @@
         var instances = M.Tabs.init(elems);
       });
     </script>
+    <script>
+    M.AutoInit();
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          M.toast({ html: "{{ message }}" });
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </script>
     {% block scripts %}{% endblock %}
   </body>
 </html>

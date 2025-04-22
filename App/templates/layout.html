@@ -1,70 +1,108 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
-  
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-     <!--Import Google Icon Font-->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Dashboard{% endblock %}</title>
+
+    <!-- Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <!--Let browser know website is optimized for mobile-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>{% block title %}{% endblock %}</title>
 
+    <style>
+      body {
+        background-color: #f9f9f9;
+      }
+
+      
+      .scrollable-cards{
+        box-shadow: none;
+        border: 1px solid #ddd;
+        border-radius: 0px;
+        padding: 0px;
+        margin: 0px;
+      }
+
+      .scrollable-section {
+        max-height: 400px; /* or whatever height you want */
+        min-height: 100px;
+        overflow-y: auto;
+        padding-right: 10px; /* for scrollbar spacing */
+        border: 2px solid #ef0101;
+        border-radius: 2px;
+        background-color: #fdfcfc;
+        margin: 0px;
+        margin-left: -10px;
+        margin-right: -10px;
+      }
+
+      .tab-border {
+        border: 2px solid #ddd;
+        border-radius: 2px;
+        padding: 10px;
+        background-color: #fff;
+        margin-bottom: 0px;
+        border-bottom: none;
+    }
+
+      .tabs .tab a {
+        color: #1976d2;
+      }
+      .tabs .tab a.active {
+        font-weight: bold;
+      }
+      .card .card-content img {
+        width: 60px;
+      }
+      .search-container {
+        display: flex;
+        justify-content: center;
+        padding: 1rem;
+        border-radius: 2px;
+        border: 2px solid #ddd;
+        margin-top: 0;
+      }
+      .card-action .btn-flat {
+        margin-right: 1rem;
+      }
+
+      .content-border {
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        background-color: #fff;
+      }     
+    </style>
   </head>
+
   <body>
-    
-      <nav class="purple">
-          <div class="nav-wrapper">
-              <a href="#!" class="brand-logo center">{% block page %}{% endblock %}</a>
-              <ul id="nav-mobile" class="left">
-                  <li><a href="/">Home</a></li>
-                  <li><a href="/users">Users Jinja</a></li>
-                  {% if is_authenticated %}
-                    <li><a href="/identify">Identify</a></li>
-                  {% endif %}
-                  <li><a href="/static/users">Users JS</a></li>
-              </ul>
-              {% if is_authenticated %}
-              <ul id="nav-mobile" class="right">
-                <li><a href="/logout">Logout</a></li>
-              </ul>
-              {% else %}
-              <form class="right navbar-form" method="POST" action="/login" style="display: flex; flex-wrap: nowrap; align-items: center; margin-right: 10px;">
-                  <div class="input-field" style="margin-right: 10px;">
-                      <input placeholder="username" value="bob" name="username" type="text" class="validate" required>
-                      <label for="username">username</label>
-                  </div>
-                  <div class="input-field" style="margin-right: 10px;">
-                      <input placeholder="password"value="bobpass" name="password" type="password" class="validate" required>
-                      <label for="password">Password</label>
-                  </div>
-                  <button type="submit" class="btn waves-effect waves-light">Login</button>
-              </form>
-              {% endif %}
-              
-          </div>
-      </nav>
-      <style>
-          .navbar-form label {
-              color: white !important;
-          }
-      </style>
+    <nav class="white z-depth-0">
+      <div class="nav-wrapper container">
+        <a href="/home" class="black-text" style="font-size: 1.5rem; font-weight: bold;">ResuMeup</a>
+        <ul class="right">
+            <li><span class="black-text">{{ current_user.username }}</span></li>
+            <li><i class="material-icons black-text">account_circle</i></li>
+            <li><a href="{{ url_for('auth_views.logout_action') }}" class="black-text">Logout</a></li>   
+        </ul>
+      </div>
+    </nav>
 
-    <div class="container" id="content">{% block content %}{% endblock %}</div>
+      <!-- Main content block -->
+      <div class="row">
+        <div class="col s12">
+          {% block content %}{% endblock %}
+        </div>
+      </div>
+    </div>
 
+    <!-- Materialize JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
-       M.AutoInit();
-
-        {% with messages = get_flashed_messages() %}
-          {% if messages %}
-              {% for message in messages %}
-              M.toast({html: '{{message}}'})
-              {% endfor %}
-          {% endif %}
-        {% endwith %}
-       
+      document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('.tabs');
+        var instances = M.Tabs.init(elems);
+      });
     </script>
+    {% block scripts %}{% endblock %}
   </body>
 </html>

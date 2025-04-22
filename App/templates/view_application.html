@@ -1,4 +1,4 @@
-{% extends "new_layout.html" %}
+{% extends "view_temp.html" %}
 {% block title %}Student Dashboard{% endblock %}
 {% block page %}Student Dashboard{% endblock %}
 
@@ -9,11 +9,12 @@
         <span class="card-title">Application Information</span>
            <div class="card-content">
             <p><strong>Internship Title:</strong> {{ application.internship.title }}</p>
-            <p><strong>Company:</strong> {{ application.internship.company.username }}</p>
+            <p><strong>Company:</strong> {{ application.internship.company.name }}</p>
             <p><strong>Application Status:</strong> {{ application.status }}</p>
             <p><strong>Resume Link:</strong> <a href="{{ application.resume }}">{{ application.resume }}</a></p>
-            <p><strong>Student Name:</strong> {{application.student.username}}</p>
+            <p><strong>Student Name:</strong> {{application.student.fname}} {{application.student.lname}}</p>
             <p><strong>Applied On:</strong> {{ application.applied_on }}</p>
+            <p><strong>Email:</strong>{{application.student.email}}</p>
             </div>
             <div class="card-action">
                 {% if current_user.role == 'staff' %}
