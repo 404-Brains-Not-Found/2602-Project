@@ -3,19 +3,11 @@ from flask_jwt_extended import jwt_required, current_user, unset_jwt_cookies, se
 from App.controllers.user import create_user, get_all_users, get_user_by_username
 from App.models.company import Company
 from App.models.student import Student
-
-
 from.index import index_views
-
-from App.controllers import (
-    login
-)
+from App.controllers import login
 
 auth_views = Blueprint('auth_views', __name__, template_folder='../templates')
 
-'''
-Page/Action Routes
-'''    
 @auth_views.route('/users', methods=['GET'])
 def get_user_page():
     users = get_all_users()
@@ -25,7 +17,6 @@ def get_user_page():
 @jwt_required()
 def identify_page():
     return render_template('message.html', title="Identify", message=f"You are logged in as {current_user.id} - {current_user.username}")
-    
 
 @auth_views.route('/login', methods=['GET'])
 def show_login():
@@ -33,21 +24,16 @@ def show_login():
     role = request.args.get('role')
     return render_template('login.html', title="Login", showform=showform, role=role)
 
-
 @auth_views.route('/login', methods=['POST'])
 def login_action():
     data = request.form
     role = data.get('role')
     username = data.get('username')
     password = data.get('password')
-
     user = get_user_by_username(username)
-    
-
     if not user or not user.check_password(password) or user.role != role:
         flash('Invalid credentials or role')
         return redirect(request.referrer)
-
     token = login(username, password)
     response = redirect(url_for('index_views.index_page'))
     set_access_cookies(response, token)
@@ -71,27 +57,21 @@ def signup_action():
     username = data.get('username')
     password = data.get('password')
     role = data.get('role')
-
     user = create_user(**data)
     if not user:
         flash('User already exists or invalid role')
         return redirect(request.referrer)
     return redirect(url_for('auth_views.show_login'))
 
-   
-'''
-API Routes
-'''
-
 @auth_views.route('/api/login', methods=['POST'])
 def user_login_api():
-  data = request.json
-  token = login(data['username'], data['password'])
-  if not token:
-    return jsonify(message='bad username or password given'), 401
-  response = jsonify(access_token=token) 
-  set_access_cookies(response, token)
-  return response
+    data = request.json
+    token = login(data['username'], data['password'])
+    if not token:
+        return jsonify(message='bad username or password given'), 401
+    response = jsonify(access_token=token)
+    set_access_cookies(response, token)
+    return response
 
 @auth_views.route('/api/identify', methods=['GET'])
 @jwt_required()
