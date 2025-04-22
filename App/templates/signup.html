@@ -1,52 +1,99 @@
-{% extends "new_layout.html" %}
+{% extends "auth_temp.html" %}
 {% block title %}Sign Up{% endblock %}
 {% block page %}Sign Up{% endblock %}
 
 {{ super() }}
 
 {% block content %}
-<div class="row">
-  <div class="col s12 m6 offset-m3">
-    <div class="card">
-      <div class="card-content">
-        <span class="card-title">Sign Up</span>
-        <form method="POST" action="{{ url_for('auth_views.signup_action')}}">
-          <div class="input-field">
-            <input id="username" name="username" type="text" required>
-            <label for="username">Username</label>
-          </div>
+<div class="form-container">
+<div class="center-align" style="margin-top: 20px;">
+  <div class="card blue lighten-4" style="max-width: 500px; margin: 0 auto;">
+    <div class="card-content">
+      <span class="card-title">Sign Up</span>
+      <form method="POST" action="{{ url_for('auth_views.signup_action') }}">
+        <div class="input-field">
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" required>
+        </div>
 
-          <div class="input-field">
-            <input id="email" name="email" type="email" required>
-            <label for="email">Email</label>
-          </div>
+        <div class="input-field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required>
+        </div>
 
-          <div class="input-field">
-            <input id="password" name="password" type="password" required>
-            <label for="password">Password</label>
-          </div>
+        <div class="input-field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" required>
+        </div>
 
+        <div class="input-field">
           <select id="role" name="role" required>
             <option value="" disabled selected>Choose your role</option>
             <option value="student">Student</option>
             <option value="staff">Staff</option>
             <option value="company">Company</option>
           </select>
-
-          <button class="btn waves-effect waves-light" type="submit">Sign Up</button>
-        </form>
-            
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <ul class="collection red-text">
-                {% for message in messages %}
-                    <li class="collection-item">{{ message }}</li>
-                {% endfor %}    
-                </ul>
-            {% endif %}
-            {% endwith %}
+          <label for="role">Select Role</label>
         </div>
-    </div>
-    </div>
+
+        <div id="extra-fields"></div>
+
+        <button class="btn waves-effect waves-light purple" type="submit">Sign Up</button>
+      </form>
+      </div>
+  </div>
 </div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const roleSelect = document.getElementById('role');
+    const extraFieldsDiv = document.getElementById('extra-fields');
+
+    roleSelect.addEventListener('change', function () {
+      const role = this.value;
+      let html = '';
+
+      if (role === 'student') {
+        html += `
+          <div class="input-field">
+            <label for="fname">First Name</label>
+            <input id="fname" name="fname" type="text" required>
+          </div>
+          <div class="input-field">
+            <label for="lname">Last Name</label>
+            <input id="lname" name="lname" type="text" required>
+          </div>
+          <div class="input-field">
+            <label for="program">Program of Study</label>
+            <input id="program" name="program" type="text" required>
+          </div>
+        `;
+      } else if (role === 'staff') {
+        html += `
+          <div class="input-field">
+            <label for="staff_id">Full Name</label>
+            <input id="full_name" name="full_name" type="text" required>
+          </div>
+          <div class="input-field">
+            <label for="department">Department</label>
+            <input id="department" name="department" type="text" required>
+          </div>
+        `;
+      } else if (role === 'company') {
+        html += `
+          <div class="input-field">
+            <label for="company_name">Company Name</label>
+            <input id="company_name" name="company_name" type="text" required>
+          </div>
+        `;
+      }
+
+      extraFieldsDiv.innerHTML = html;
+      M.updateTextFields(); // Materialize label fix
+    });
+
+    const elems = document.querySelectorAll('select');
+    M.FormSelect.init(elems);
+  });
+</script>
 {% endblock %}

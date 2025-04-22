@@ -1,42 +1,44 @@
-{% extends "new_layout.html" %}
+{% extends "auth_temp.html" %}
 {% block title %}Login{% endblock %}
 {% block page %}Login{% endblock %}
 
 {{ super() }}
 
 {% block content %}
-<div class="row">
-  <div class="col s12 m6 offset-m3">
-    <div class="card">
-      <div class="card-content">
-        {% if not showform %}
-        <span class="card-title">Select Role to Login</span>
 
-        <div class="center-align">
-          <a href="{{ url_for('auth_views.show_login', showform='true', role='student') }}" class="btn #b2f2bb" style="width: 100%;">Student</a><br><br>
-          <a href="{{ url_for('auth_views.show_login', showform='true', role='staff') }}" class="btn #b2f2bb" style="width: 100%;">Staff</a><br><br>
-          <a href="{{ url_for('auth_views.show_login', showform='true', role='company') }}" class="btn #b2f2bb" style="width: 100%;">Company</a><br><br>
-          <br><br>
-          <a href="{{ url_for('auth_views.show_signup')}}" class="btn #b2f2bb" style="width: 100%;">Sign Up</a><br><br>
-        </div>
-        {%endif%}
+{% if not showform %}
+<div class="btn-group">
+  <a href="{{ url_for('auth_views.show_login', showform='true', role='student') }}" class="btn">Student Login</a>
+  <a href="{{ url_for('auth_views.show_login', showform='true', role='staff') }}" class="btn">Staff Login</a>
+  <a href="{{ url_for('auth_views.show_login', showform='true', role='company') }}" class="btn">Company Login</a>
+</div>
+<a href="{{ url_for('auth_views.show_signup') }}" class="btn signup">sign up now</a>
+
+{%endif%}
+  
+
+  
+       
           
         {% if showform %}
-        <form method="POST" action="{{ url_for('auth_views.login_action') }}" style="margin-top: 20px;">
-          <input type="hidden" id="role" name="role" value="{{role}}" required>
-
-          <div class="input-field">
-            <input id="username" name="username" type="text" required>
-            <label for="username">Username</label>
-          </div>
-
-          <div class="input-field">
-            <input id="password" name="password" type="password" required>
-            <label for="password">Password</label>
-          </div>
-
-          <button class="btn waves-effect waves-light" type="submit">Login</button>
-        </form>
+        <div class="form-container">
+          <span class="card-title">Login</span>
+          <form method="POST" action="{{ url_for('auth_views.login_action') }}" style="margin-top: 20px;">
+            <input type="hidden" id="role" name="role" value="{{role}}" required>
+  
+            <div class="input-field">
+              <label for="username">Username</label>
+              <input id="username" name="username" type="text" required>
+            </div>
+  
+            <div class="input-field">
+              <label for="password">Password</label>
+              <input id="password" name="password" type="password" required>
+            </div>
+  
+            <button class="btn waves-effect waves-light" type="submit">Login</button>
+          </form>
+          
         {%endif%}
 
         {% with messages = get_flashed_messages() %}

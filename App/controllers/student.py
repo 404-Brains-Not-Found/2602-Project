@@ -1,10 +1,10 @@
 from App.database import db
 from App.models.student import Student
 
-def create_student(username, password, degree, year):
+def create_student(username, password, degree, year, f_name, l_name):
     if Student.query.filter_by(username=username).first():
         return None
-    student = Student(username, password, degree, year)
+    student = Student(username, password, degree, year, f_name, l_name)
     db.session.add(student)
     db.session.commit()
     return student
